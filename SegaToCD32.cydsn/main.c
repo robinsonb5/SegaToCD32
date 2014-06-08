@@ -52,15 +52,19 @@ CY_ISR(timerISR)
             if((~Sega_Inputs_Read()) & 0xf)
                 sixbutton=0;    // Not a six-button pad            
             Sega_SixButton=sixbutton;
-
+            
+            // Now send the button status to the CD32 Shifter.
             CD32_Directions=Sega_DirBC&0xf;
             CD32_Buttons=(Sega_DirBC<<2)&0xc0;
             CD32_Buttons|=Sega_AStart&0x30;
             if(sixbutton)
                 CD32_Buttons|=Sega_XYZMode&0xf;
+            else
+                CD32_Buttons|=0xf;
             CD32Shifter_1_Data_Reg=CD32_Buttons;
             CD32Shifter_1_Fire_Reg=(Sega_DirBC&0x10) ? 0x00 : 0xff;
             break;
+
         default:
             break;
     }
@@ -71,7 +75,7 @@ CY_ISR(timerISR)
 
     --framectr;
     if(framectr==0)
-        framectr=255;
+        framectr=63;
 }
 
 
@@ -79,17 +83,9 @@ int main()
 {
     Isr_Timer_StartEx(timerISR);
     FrameTimer_Start();
-    MyUART_Start();
     CyGlobalIntEnable;
-    while(1)
-    {
-        CyDelay(100);
-        if(DB9_5_Read()==0)
-        {
-            snprintf(buf,64,"%x, %x, %x, %x\r\n",Sega_DirBC,Sega_AStart,Sega_XYZMode,Sega_SixButton);
-            MyUART_UartPutString(buf);
-        }
-    }
+    CySysPmSleep();
+    return(0);
 }
 
 /* [] END OF FILE */

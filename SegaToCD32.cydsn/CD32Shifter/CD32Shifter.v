@@ -30,6 +30,7 @@ localparam OPERATION_SHIFT=3'b000;
 localparam OPERATION_NOP=3'b001;
 localparam OPERATION_LOAD=3'b010;
 localparam OPERATION_LOADSHIFT=3'b011;
+reg[2:0] operation;
 
 localparam STATE_IDLE=2'b00;
 localparam STATE_IDLE2=2'b01;
@@ -38,21 +39,18 @@ localparam STATE_SHIFT2=2'b11;
 reg[1:0] shiftstate;
 
 wire mode;
-assign mode=db9_5_in;
+assign mode=db9_5_in;  // Shift register enable signal on DB9 pin 5.
 
 wire shift;
-assign shift=db9_6_in;
+assign shift=db9_6_in;  // Shift register clock signal on DB9 pin 6.
 
-reg[2:0] operation;
-wire shifted_data;
-
-wire firebutton;
+wire firebutton; // Gets its value from the DataPath z1 signal (1 when A1=0).
 
 // If the mode signal is high, then buttons 0 and 1 are passed through to DB9 pins 6 and 9, respectively
 // If the mode signal is low, then the output of the shifter is passed to DB9 pin 9,
 // while pin 6 becomes a clock signal.
 
-// assign red_out = latch==1'b1 ? buttons[0] : 1'b1;
+wire shifted_data;
 assign db9_9_out = shifted_data;
 assign db9_6_out = mode ? firebutton : 1'b1;
 
@@ -63,8 +61,12 @@ begin
     if(shiftstate==STATE_IDLE)
     begin
         shiftstate<=STATE_IDLE;
-        // Wait for mode signal to drop.  When it does, load the current button value into the shifter.
+
+        // Contintually load the current button status into the shift register while idle.
+        // This allows the first button's status to reach the s0 signal.
         operation<=OPERATION_LOAD;
+
+        // Wait for mode signal to drop.  When it does, start shifting.
         if(mode==1'b0 && shift==1'b0)
         begin
             shiftstate<=STATE_SHIFT1;
