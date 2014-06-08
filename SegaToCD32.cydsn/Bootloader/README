@@ -1,0 +1,7 @@
+The bootloader .hex and .elf files are included here for convenience.
+They're not required for the project to run, but are used to allows the
+CY8CKIT-049 to be reflashed with different firmware at a later date without
+the need for a JTAG programmer.
+The Cypress example project from which these files were generated can be
+found at: http://www.cypress.com/?rID=92146
+
