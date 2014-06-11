@@ -6,7 +6,6 @@ static int Sega_DirBC;
 static int Sega_AStart;
 static int Sega_XYZMode;
 static int CD32_Buttons;
-static int CD32_Directions;
 
 char buf[64];
 
@@ -54,7 +53,7 @@ CY_ISR(timerISR)
             Sega_SixButton=sixbutton;
             
             // Now send the button status to the CD32 Shifter.
-            CD32_Directions=Sega_DirBC&0xf;
+            CD32_Directions_Write(Sega_DirBC&0xf);
             CD32_Buttons=(Sega_DirBC<<2)&0xc0;
             CD32_Buttons|=Sega_AStart&0x30;
             if(sixbutton)
