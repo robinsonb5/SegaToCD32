@@ -72,8 +72,7 @@ begin
             shiftstate<=STATE_SHIFT1;
         end
     end
-
-    if(shiftstate==STATE_SHIFT1)
+    else if(shiftstate==STATE_SHIFT1)
     begin
         operation<=OPERATION_NOP;
         // Wait for posedge of the shift signal, shift data on transition.
@@ -86,8 +85,7 @@ begin
         if(mode==1'b1)
             shiftstate<=STATE_IDLE;
     end
-
-    if(shiftstate==STATE_SHIFT2)
+    else if(shiftstate==STATE_SHIFT2)
     begin
         operation<=OPERATION_NOP;
         // Wait for negedge of the shift signal.
@@ -99,6 +97,8 @@ begin
         if(mode==1'b1)
             shiftstate<=STATE_IDLE;
     end
+    else
+        shiftstate<=STATE_IDLE;
 end
 
 
@@ -107,49 +107,49 @@ cy_psoc3_dp8 #(.cy_dpconfig_a(
     `CS_ALU_OP_PASS, `CS_SRCA_A0, `CS_SRCB_D0,
     `CS_SHFT_OP___SL, `CS_A0_SRC__ALU, `CS_A1_SRC_NONE,
     `CS_FEEDBACK_DSBL, `CS_CI_SEL_CFGA, `CS_SI_SEL_CFGA,
-    `CS_CMP_SEL_CFGA, /*CFGRAM0:  SHIFT*/
+    `CS_CMP_SEL_CFGA, /*CFGRAM0:    SHIFT*/
     `CS_ALU_OP_PASS, `CS_SRCA_A0, `CS_SRCB_D0,
     `CS_SHFT_OP_PASS, `CS_A0_SRC_NONE, `CS_A1_SRC_NONE,
     `CS_FEEDBACK_DSBL, `CS_CI_SEL_CFGA, `CS_SI_SEL_CFGA,
-    `CS_CMP_SEL_CFGA, /*CFGRAM1:  NOP*/
+    `CS_CMP_SEL_CFGA, /*CFGRAM1:    NOP*/
     `CS_ALU_OP_PASS, `CS_SRCA_A0, `CS_SRCB_D0,
     `CS_SHFT_OP_PASS, `CS_A0_SRC___D0, `CS_A1_SRC_NONE,
     `CS_FEEDBACK_DSBL, `CS_CI_SEL_CFGA, `CS_SI_SEL_CFGA,
-    `CS_CMP_SEL_CFGA, /*CFGRAM2:  LOAD*/
+    `CS_CMP_SEL_CFGA, /*CFGRAM2:    LOAD*/
     `CS_ALU_OP_PASS, `CS_SRCA_A0, `CS_SRCB_D0,
     `CS_SHFT_OP___SL, `CS_A0_SRC___D0, `CS_A1_SRC_NONE,
     `CS_FEEDBACK_DSBL, `CS_CI_SEL_CFGA, `CS_SI_SEL_CFGA,
-    `CS_CMP_SEL_CFGA, /*CFGRAM3: LOADSHIFT*/
+    `CS_CMP_SEL_CFGA, /*CFGRAM3:   LOADSHIFT*/
     `CS_ALU_OP_PASS, `CS_SRCA_A0, `CS_SRCB_D0,
     `CS_SHFT_OP_PASS, `CS_A0_SRC_NONE, `CS_A1_SRC_NONE,
     `CS_FEEDBACK_DSBL, `CS_CI_SEL_CFGA, `CS_SI_SEL_CFGA,
-    `CS_CMP_SEL_CFGA, /*CFGRAM4:           */
+    `CS_CMP_SEL_CFGA, /*CFGRAM4:             */
     `CS_ALU_OP_PASS, `CS_SRCA_A0, `CS_SRCB_D0,
     `CS_SHFT_OP_PASS, `CS_A0_SRC_NONE, `CS_A1_SRC_NONE,
     `CS_FEEDBACK_DSBL, `CS_CI_SEL_CFGA, `CS_SI_SEL_CFGA,
-    `CS_CMP_SEL_CFGA, /*CFGRAM5:           */
+    `CS_CMP_SEL_CFGA, /*CFGRAM5:             */
     `CS_ALU_OP_PASS, `CS_SRCA_A0, `CS_SRCB_D0,
     `CS_SHFT_OP_PASS, `CS_A0_SRC_NONE, `CS_A1_SRC_NONE,
     `CS_FEEDBACK_DSBL, `CS_CI_SEL_CFGA, `CS_SI_SEL_CFGA,
-    `CS_CMP_SEL_CFGA, /*CFGRAM6:           */
+    `CS_CMP_SEL_CFGA, /*CFGRAM6:             */
     `CS_ALU_OP_PASS, `CS_SRCA_A0, `CS_SRCB_D0,
     `CS_SHFT_OP_PASS, `CS_A0_SRC_NONE, `CS_A1_SRC_NONE,
     `CS_FEEDBACK_DSBL, `CS_CI_SEL_CFGA, `CS_SI_SEL_CFGA,
-    `CS_CMP_SEL_CFGA, /*CFGRAM7:           */
-    8'hFF, 8'hFF,  /*CFG9:           */
-    8'hFF, 8'hFF,  /*CFG11-10:           */
+    `CS_CMP_SEL_CFGA, /*CFGRAM7:             */
+    8'hFF, 8'hFF,  /*CFG9:             */
+    8'hFF, 8'hFF,  /*CFG11-10:             */
     `SC_CMPB_A1_D1, `SC_CMPA_A1_D1, `SC_CI_B_ARITH,
     `SC_CI_A_ARITH, `SC_C1_MASK_DSBL, `SC_C0_MASK_DSBL,
     `SC_A_MASK_DSBL, `SC_DEF_SI_1, `SC_SI_B_DEFSI,
-    `SC_SI_A_DEFSI, /*CFG13-12:    */
+    `SC_SI_A_DEFSI, /*CFG13-12:      */
     `SC_A0_SRC_ACC, `SC_SHIFT_SL, 1'h0,
     1'h0, `SC_FIFO1_BUS, `SC_FIFO0_BUS,
     `SC_MSB_DSBL, `SC_MSB_BIT0, `SC_MSB_NOCHN,
     `SC_FB_NOCHN, `SC_CMP1_NOCHN,
-    `SC_CMP0_NOCHN, /*CFG15-14:           */
+    `SC_CMP0_NOCHN, /*CFG15-14:             */
     10'h00, `SC_FIFO_CLK__DP,`SC_FIFO_CAP_AX,
     `SC_FIFO_LEVEL,`SC_FIFO__SYNC,`SC_EXTCRC_DSBL,
-    `SC_WRK16CAT_DSBL /*CFG17-16:           */
+    `SC_WRK16CAT_DSBL /*CFG17-16:             */
 }
 )) CD32Shifter_DP(
         /*  input                   */  .reset(1'b0),
@@ -182,6 +182,8 @@ cy_psoc3_dp8 #(.cy_dpconfig_a(
 endmodule
 //`#start footer` -- edit after this line, do not edit this line
 //`#end` -- edit above this line, do not edit this line
+
+
 
 
 
