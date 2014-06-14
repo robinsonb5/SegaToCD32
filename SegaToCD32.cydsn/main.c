@@ -48,7 +48,8 @@ CY_ISR(timerISR)
         case 2:
             // After the trailing edge of the third low pulse, XYZ and mode are readable.
             Sega_XYZMode=Sega_Inputs_Read();
-            Sega_Direction|=(Sega_XYZMode>>3)&0x1; // Mode -> Up
+            if(!(Sega_XYZMode&0x4))
+                Sega_Direction&=0xfe; // Mode -> Up
             Sega_XYZMode=((Sega_XYZMode&0x2)<<4) |    // Y -> Yellow
             ((Sega_XYZMode&0x1)<<3) | (Sega_XYZMode&0x4);  // X -> Rew, Z -> FF
             break;
@@ -68,7 +69,7 @@ CY_ISR(timerISR)
                 CD32_Buttons|=0xf;
             CD32Shifter_1_Data_Reg=CD32_Buttons;
                 // Pass Red button status through to pin 6.
-            CD32Shifter_1_Fire_Reg=(Sega_BC&0x10) ? 0x00 : 0xff;
+            CD32Shifter_1_Fire_Reg=(Sega_BC&0x40) ? 0x00 : 0xff;
             break;
 
         default:
