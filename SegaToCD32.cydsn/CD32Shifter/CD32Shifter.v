@@ -12,10 +12,11 @@
 // ========================================
 `include "cypress.v"
 //`#end` -- edit above this line, do not edit this line
-// Generated on 05/20/2014 at 23:58
+// Generated on 06/14/2014 at 20:26
 // Component: CD32Shifter
 module CD32Shifter (
 	output  db9_6_out,
+	output  db9_9_oe,
 	output  db9_9_out,
 	input   clock,
 	input   db9_5_in,
@@ -33,10 +34,10 @@ localparam OPERATION_LOADSHIFT=3'b011;
 reg[2:0] operation;
 
 localparam STATE_IDLE=2'b00;
-localparam STATE_IDLE2=2'b01;
-localparam STATE_SHIFT1=2'b10;
+localparam STATE_SHIFT1=2'b01;
 localparam STATE_SHIFT2=2'b11;
 reg[1:0] shiftstate;
+
 
 wire mode;
 assign mode=db9_5_in;  // Shift register enable signal on DB9 pin 5.
@@ -53,6 +54,10 @@ wire firebutton; // Gets its value from the DataPath z1 signal (1 when A1=0).
 wire shifted_data;
 assign db9_9_out = shifted_data;
 assign db9_6_out = mode ? firebutton : 1'b1;
+
+// Need to use strong drive on pin 9 for speed, so for safety we avoid driving the
+// pin high when not actively shifting.
+assign db9_9_oe = ((shiftstate!=STATE_IDLE) | shifted_data==1'b0);
 
 // FIXME - do we need more filtering on DB9_6_in?
 
@@ -182,12 +187,3 @@ cy_psoc3_dp8 #(.cy_dpconfig_a(
 endmodule
 //`#start footer` -- edit after this line, do not edit this line
 //`#end` -- edit above this line, do not edit this line
-
-
-
-
-
-
-
-
-
