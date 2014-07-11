@@ -48,7 +48,7 @@ CY_ISR(timerISR)
         case 2:
             // After the trailing edge of the third low pulse, XYZ and mode are readable.
             Sega_XYZMode=Sega_Inputs_Read();
-            if(!(Sega_XYZMode&0x4))
+            if(!(Sega_XYZMode&0x8))
                 Sega_Direction&=0xfe; // Mode -> Up
             Sega_XYZMode=((Sega_XYZMode&0x2)<<4) |    // Y -> Yellow
             ((Sega_XYZMode&0x1)<<3) | (Sega_XYZMode&0x4);  // X -> Rew, Z -> FF
